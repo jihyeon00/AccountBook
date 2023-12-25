@@ -128,12 +128,6 @@ public class ABRoutine {
 		ResultSet rs = null;
 		int array[]=null;
 		
-		routine.setROUTINE_DIV(div);
-		
-		System.out.printf("\n[%s 루틴 조회]\n",routine.getROUTINE_DIV());
-		System.out.println("------------------------------------------------------------------------");
-		System.out.printf("%s\t%s\t\t\t\t\t\t%s\n","번호","내용","지급토큰수");
-		System.out.println("------------------------------------------------------------------------");
 		try {
 			sql = ""
 					+ "SELECT ROUTINE_SEQ, ROUTINE_CONTENTS, ROUTINE_TOKEN "
@@ -153,8 +147,19 @@ public class ABRoutine {
 			}
 			array = new int[num];
 			
+			if(array.length==0) {
+				System.out.println("\n입력된 루틴이 없습니다.\n");
+				rtManu();
+			}
+			
 			rs2.close();
 			pstmt2.close();
+			
+			routine.setROUTINE_DIV(div);
+			System.out.printf("\n[%s 루틴 조회]\n",routine.getROUTINE_DIV());
+			System.out.println("------------------------------------------------------------------------");
+			System.out.printf("%s\t%s\t\t\t\t\t\t%s\n","번호","내용","지급토큰수");
+			System.out.println("------------------------------------------------------------------------");
 			
 			int num2 = 0;
 			while (rs.next()) {
@@ -493,10 +498,4 @@ public class ABRoutine {
 		}catch(Exception e) {e.printStackTrace();}
 		
 	}
-	
-	public static void main(String[] args) {
-		ABRoutine rt = new ABRoutine();
-		rt.rtManu();
-	}
-
 }

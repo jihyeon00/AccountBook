@@ -11,23 +11,24 @@ import java.util.Date;
 import java.util.Scanner;
 
 import dto.conAnalysisVO;
+import main.ABStart;
 import util.Category;
 import util.DBManager;
 
-public class conAnalysis {
+public class ConAnalysis {
 	Scanner sc = new Scanner(System.in);
 	static Category[] cg = Category.values();
 	static DecimalFormat decFor = new DecimalFormat("###,###");
 	
 	public static void main(String[] args) {
 		
-		selectCategoryYearOut();
-		
+		selectCategoryMonthAll();
 	}
 	
 	// 소비분석 메뉴를 불러오는 메서드
-	static void conAnalysisManu() {
+	public static void conAnalysisManu() {
 		Scanner sc = new Scanner(System.in);
+		ABStart abStart = new ABStart();
 		System.out.println("==============================================================================");
 		System.out.println("[소비분석]");
 		System.out.println("------------------------------------------------------------------------------");
@@ -52,13 +53,13 @@ public class conAnalysis {
 				selectCategoryManu();
 				break;
 			case 5:
-//				ABStart.stManu();
+				abStart.stManu();
 				break;
 			default:
 				System.out.println("------------------------------------------------------");
 				System.out.println("다시 입력해주세요.");
 				System.out.println("------------------------------------------------------");
-				conAnalysis.conAnalysisManu();
+				ConAnalysis.conAnalysisManu();
 		}
 		sc.close();
 	}
@@ -153,7 +154,7 @@ public class conAnalysis {
 				}
 			}
 
-			sql = "SELECT TO_CHAR(M.MONEY_DATE,'YYYY/MM/DD') MONEY_DATE, "
+			sql = "SELECT rownum,TO_CHAR(M.MONEY_DATE,'YYYY/MM/DD') MONEY_DATE, "
 					+ "C.CATEGORY_NAME, M.MONEY_INOUT, M.MONEY_WON "
 					+ "FROM MONEYBOOK M, CATEGORY C "
 					+ "WHERE M.CATEGORY_seq = C.CATEGORY_seq"
@@ -169,12 +170,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
-			}
+				if(rs.next()) {
+					do{
+						System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+						System.out.println();
+					}while (rs.next());
+				} else {
+					System.out.println("입력된 내역이 없습니다.");
+				}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -242,12 +247,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
+			if(rs.next()) {
+				do{
+					System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+					System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -315,12 +324,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
+			if(rs.next()) {
+				do{
+					System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+					System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -435,12 +448,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
+			if(rs.next()) {
+				do{
+					System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+					System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -507,12 +524,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
+			if(rs.next()) {
+				do{
+					System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+					System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -580,12 +601,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
+			if(rs.next()) {
+				do{
+					System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+					System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -702,12 +727,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
+			if(rs.next()) {
+				do{
+					System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+					System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -775,12 +804,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
+			if(rs.next()) {
+				do{
+					System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+					System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -847,12 +880,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
-				System.out.println();
+			if(rs.next()) {
+				do{
+					System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")),rs.getString("category_name"));
+					System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -911,7 +948,7 @@ public class conAnalysis {
 		
 		switch(selectManu) {
 		case 1:
-			selectCategorMonthAll();
+			selectCategoryMonthAll();
 			break;
 		case 2:
 			selectCategoryMonthIn();
@@ -932,8 +969,8 @@ public class conAnalysis {
 	}
 	
 	// 카테고리별 월별 모든 내역
-	public static conAnalysisVO selectCategorMonthAll() {
-		conAnalysisVO selectCategorMonthAll = new conAnalysisVO();
+	public static conAnalysisVO selectCategoryMonthAll() {
+		conAnalysisVO selectCategoryMonthAll = new conAnalysisVO();
 		String selectMonth;
 		Scanner sc = new Scanner(System.in);
 		
@@ -978,7 +1015,7 @@ public class conAnalysis {
 			cnum = sc.nextInt();
 		}
 
-		selectCategorMonthAll.setCategorySeq(cnum);
+		selectCategoryMonthAll.setCategorySeq(cnum);
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1034,19 +1071,23 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategorMonthAll.getCategorySeq() - 1].name());
+			if (rs.next()) {
+				do{
+				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryMonthAll.getCategorySeq() - 1].name());
 				System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.selectCategoryBack();
+			ConAnalysis.selectCategoryBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		sc.close();
 		DBManager.selectClose(conn, pstmt, rs);
 		
-		return selectCategorMonthAll;
+		return selectCategoryMonthAll;
 	}
 	
 	// 카테고리별 월별 수입 내역
@@ -1136,12 +1177,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
+			if (rs.next()) {
+				do{
 				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryMonthIn.getCategorySeq() - 1].name());
 				System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.selectCategoryBack();
+			ConAnalysis.selectCategoryBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1153,7 +1198,7 @@ public class conAnalysis {
 	
 	// 카테고리별 월별 지출 내역
 	public static conAnalysisVO selectCategoryMonthOut() {
-		conAnalysisVO selectCategorMonthOut = new conAnalysisVO();
+		conAnalysisVO selectCategoryMonthOut = new conAnalysisVO();
 		String selectMonth;
 		Scanner sc = new Scanner(System.in);
 		
@@ -1198,7 +1243,7 @@ public class conAnalysis {
 			cnum = sc.nextInt();
 		}
 
-		selectCategorMonthOut.setCategorySeq(cnum);
+		selectCategoryMonthOut.setCategorySeq(cnum);
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1240,19 +1285,23 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategorMonthOut.getCategorySeq() - 1].name());
+			if (rs.next()) {
+				do{
+				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryMonthOut.getCategorySeq() - 1].name());
 				System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.selectCategoryBack();
+			ConAnalysis.selectCategoryBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		sc.close();
 		DBManager.selectClose(conn, pstmt, rs);
 		
-		return selectCategorMonthOut;
+		return selectCategoryMonthOut;
 	}
 
 	// 카테고리별 연도별 내역 메뉴
@@ -1394,12 +1443,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
+			if (rs.next()) {
+				do{
 				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryYearAll.getCategorySeq() - 1].name());
 				System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.selectCategoryBack();
+			ConAnalysis.selectCategoryBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1495,12 +1548,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
+			if (rs.next()) {
+				do{
 				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryYearIn.getCategorySeq() - 1].name());
 				System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.selectCategoryBack();
+			ConAnalysis.selectCategoryBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1599,12 +1656,16 @@ public class conAnalysis {
 			System.out.println("------------------------------------------------------------");
 			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			while (rs.next()) {
+			if (rs.next()) {
+				do{
 				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryYearOut.getCategorySeq() - 1].name());
 				System.out.println();
+				}while (rs.next());
+			} else {
+				System.out.println("입력된 내역이 없습니다.");
 			}
 			System.out.println("============================================================");
-			conAnalysis.selectCategoryBack();
+			ConAnalysis.selectCategoryBack();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1624,10 +1685,10 @@ public class conAnalysis {
 		Scanner sc = new Scanner(System.in);
 		String conAnalysisBack = sc.nextLine();
 		if(conAnalysisBack.equals("돌아가기")) {
-			conAnalysis.conAnalysisManu();
+			ConAnalysis.conAnalysisManu();
 		} else {
 			System.out.println("다시 입력해주세요.");
-			conAnalysis.conAnalysisBack();
+			ConAnalysis.conAnalysisBack();
 		}
 	}
 	
@@ -1640,10 +1701,10 @@ public class conAnalysis {
 		Scanner sc = new Scanner(System.in);
 		String selectCategoryBack = sc.nextLine();
 		if(selectCategoryBack.equals("돌아가기")) {
-			conAnalysis.selectCategoryManu();
+			ConAnalysis.selectCategoryManu();
 		} else {
 			System.out.println("다시 입력해주세요.");
-			conAnalysis.selectCategoryBack();
+			ConAnalysis.selectCategoryBack();
 		}
 	}
 

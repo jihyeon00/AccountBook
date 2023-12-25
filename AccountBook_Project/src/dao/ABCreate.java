@@ -140,11 +140,6 @@ public class ABCreate {
 		int array[]=null;
 		
 		money.setMONEY_DATE(date);
-		System.out.println("------------------------------------------------------------------------");
-		System.out.printf("\n[%s 가계부 내역]\n",money.getMONEY_DATE());
-		System.out.println("------------------------------------------------------------------------");
-		System.out.printf("%s \t %s \t %s \t %s\n", "번호", "카테고리", "수입/지출", "금액");
-		System.out.println("------------------------------------------------------------------------");
 		try {
 			
 			String sql = ""
@@ -165,10 +160,20 @@ public class ABCreate {
 			}
 			array = new int[num];
 			
+			if(array.length==0) {
+				System.out.println("\n내용이 없습니다.\n");
+				mainManu();
+			}
+			
 			rs2.close();
 			pstmt2.close();
 			
 			int num2 = 0;
+			System.out.println("------------------------------------------------------------------------");
+			System.out.printf("\n[%s 가계부 내역]\n",money.getMONEY_DATE());
+			System.out.println("------------------------------------------------------------------------");
+			System.out.printf("%s \t %s \t %s \t %s\n", "번호", "카테고리", "수입/지출", "금액");
+			System.out.println("------------------------------------------------------------------------");
 			while (rs.next()) {
 				array[num2] = rs.getInt("MONEY_SEQ");
 				++num2;
