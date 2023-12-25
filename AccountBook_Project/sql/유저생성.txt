@@ -1,0 +1,10 @@
+<테이블 스페이스 및 사용자 생성, 권한 부여>
+[window 시작프로그램 > Oracle - OraDB19Home1 > sql plus] 실행
+  사용자명/ 비밀번호 입력 
+ or 명령프롬프트(cmd)에서 sqlplus / as sysdba
+
+CREATE USER moneybook IDENTIFIED BY 1234;
+[사용자가 생성되었습니다.]
+
+grant connect, resource, dba to moneybook;
+[권한이 부여되었습니다.]
