@@ -12,7 +12,7 @@ import util.DBManager;
 
 public class Goal {
 	public static void main(String[] args) {
-		Goal.goalManu();
+		goalManu();
 	}
 	
 	// 소목표 메뉴
@@ -68,7 +68,7 @@ public class Goal {
 			goalVO selectGoal = new goalVO();
 
 			try {
-				String sql = "SELECT GOAL_SEQ , GOAL_CONTENTS , GOAL_TOKEN FROM Goal order by GOAL_SEQ";
+				String sql = "SELECT rownum, GOAL_SEQ , GOAL_CONTENTS , GOAL_TOKEN FROM Goal order by GOAL_SEQ";
 				conn = DBManager.getConnection();
 				pstmt = conn.prepareStatement(sql);
 				rs = pstmt.executeQuery();
@@ -77,7 +77,7 @@ public class Goal {
 				System.out.println("--------------------------------------------------");
 				if (rs.next()) {
 					do{
-						System.out.printf("%3d  |   %3d    | %s\n",rs.getInt("goal_seq"),rs.getInt("goal_token"),rs.getString("goal_contents"));
+						System.out.printf("%3d  |   %3d    | %s\n",rs.getInt(1),rs.getInt("goal_token"),rs.getString("goal_contents"));
 					}while(rs.next());
 				} else {
 					System.out.println("입력된 목표가 없습니다.");
@@ -107,11 +107,11 @@ public class Goal {
 				pstmt = conn.prepareStatement(sql);
 				rs = pstmt.executeQuery();
 				System.out.println("--------------------------------------------------");
-				System.out.println("번호 | 차감코인 | 내용");
+				System.out.println(" 실제번호 | 차감코인 | 내용");
 				System.out.println("--------------------------------------------------");
 				if (rs.next()) {
 					do{
-						System.out.printf("%3d  |   %3d    | %s\n",rs.getInt("goal_seq"),rs.getInt("goal_token"),rs.getString("goal_contents"));
+						System.out.printf("   %3d    |   %3d    | %s\n",rs.getInt("goal_seq"),rs.getInt("goal_token"),rs.getString("goal_contents"));
 					}while(rs.next());
 				} else {
 					System.out.println("입력된 목표가 없습니다.");
@@ -132,7 +132,17 @@ public class Goal {
 			System.out.println("내용을 입력하세요 (30자 이하)");
 			System.out.println("--------------------------------------------------");
 			System.out.print("입력 > ");
-			insertGoal.setGoalContents(sc.nextLine());
+			String str = sc.nextLine();
+			if(str.length()<30) {
+				insertGoal.setGoalContents(str);
+			} else {
+				System.out.println("--------------------------------------------------");
+				System.out.println("내용을 다시 입력하세요 (30자 이하)");
+				System.out.println("--------------------------------------------------");
+				System.out.print("입력 > ");
+				str = sc.nextLine();
+				insertGoal.setGoalContents(str);
+			}
 			
 			System.out.println("--------------------------------------------------");
 			System.out.println("차감할 코인의 개수를 입력하세요");
@@ -172,7 +182,7 @@ public class Goal {
 				System.out.println("--------------------------------------------------");
 				System.out.println("작성을 취소하였습니다.");
 				System.out.println("--------------------------------------------------");
-				goalBack();
+				goalManu();
 			}
 			DBManager.IUDClose(conn, pstmt);
 			return insertGoal;
@@ -188,7 +198,6 @@ public class Goal {
 			ResultSet rs = null;
 			
 			selectGoalNoBack();
-				
 			System.out.println("--------------------------------------------------");
 			System.out.println("수정할 내용의 번호를 입력해주세요.");
 			System.out.println("--------------------------------------------------");
@@ -212,17 +221,17 @@ public class Goal {
 			int GOAL_SEQ = updateGoal.getGoalSeq();
 			
 			try {
-				String sql = "SELECT GOAL_SEQ , GOAL_CONTENTS , GOAL_TOKEN FROM Goal WHERE GOAL_SEQ=? order by GOAL_SEQ";
+				String sql = "SELECT GOAL_SEQ , GOAL_TOKEN, GOAL_CONTENTS FROM Goal WHERE GOAL_SEQ=? order by GOAL_SEQ";
 				conn = DBManager.getConnection();
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setInt(1, updateGoal.getGoalSeq());
+				pstmt.setInt(1, GOAL_SEQ);
 				rs = pstmt.executeQuery();
 				System.out.println("--------------------------------------------------");
 				System.out.println("번호 | 차감코인 | 내용");
 				System.out.println("--------------------------------------------------");
 				if (rs.next()) {
-					System.out.printf("%3d  |   %3d    | %s\n",rs.getInt("goal_seq"),rs.getInt("goal_token"),rs.getString("goal_contents"));
+					System.out.printf("%3d  |   %3d    | %s\n",rs.getInt(1),rs.getInt(2),rs.getString(3));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -234,13 +243,11 @@ public class Goal {
 				System.out.print("입력 > ");
 				int updateGoalToken = sc.nextInt();
 				try{
-					if(updateGoalToken <= 0) {
+					if(updateGoalToken <= 0 | Integer.toString(updateGoalToken)=="^[\\D]*$") {
 						System.out.println("--------------------------------------------------");
 						System.out.println("다시 입력해주세요.");
 						System.out.println("--------------------------------------------------");
-						updateGoal();
-					} else {
-						updateGoal.setGoalSeq(updateGoalToken);
+						updateGoalToken = sc.nextInt();
 					}
 				} catch(Exception e){
 					ABStart abStart2 = new ABStart();
@@ -255,11 +262,24 @@ public class Goal {
 				System.out.print("입력 > ");
 				sc.nextLine();
 				updateGoal.setGoalContents(sc.nextLine());
+				try {
+					String sql = "SELECT GOAL_SEQ , GOAL_TOKEN, GOAL_CONTENTS FROM Goal WHERE GOAL_SEQ=? order by GOAL_SEQ";
+					conn = DBManager.getConnection();
+					pstmt = conn.prepareStatement(sql);
+					
+					pstmt.setInt(1, GOAL_SEQ);
+					rs = pstmt.executeQuery();
+					if (rs.next()) {
+						System.out.println("--------------------------------------------------");
+						System.out.println("\t 차감코인 | 내용");
+						System.out.println("--------------------------------------------------");
+						System.out.printf("[수정전]   %3d    | %s\n",rs.getInt(1),rs.getInt(2),rs.getString(3));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 				
-				
-				System.out.println("번호 : " + updateGoal.getGoalSeq());
-				System.out.println("차감코인 : " + updateGoal.getGoalToken());
-				System.out.println("내용 : " + updateGoal.getGoalContents());
+				System.out.printf("[수정후]   %3d    | %s\n",updateGoal.getGoalToken(),updateGoal.getGoalContents());
 				System.out.println("--------------------------------------------------");
 				System.out.println("수정하시겠습니까?\n1.확인 | 2.취소");
 				System.out.println("--------------------------------------------------");
@@ -326,7 +346,7 @@ public class Goal {
 				int deleteNum = sc.nextInt();
 				
 				try{
-					if(deleteNum <= 0) {
+					if(deleteNum <= 0 | Integer.toString(deleteNum)=="^[\\D]*$") {
 						System.out.println("--------------------------------------------------");
 						System.out.println("다시 입력해주세요.");
 						System.out.println("--------------------------------------------------");
@@ -366,15 +386,16 @@ public class Goal {
 			if(yesOrNO==1) {
 				try {
 					String sql="UPDATE TOKEN SET GOAL_SEQ=NULL WHERE GOAL_SEQ=? ";
-					pstmt = conn.prepareStatement(sql);
-					pstmt.setInt(1, GOAL_SEQ);
-					pstmt.executeUpdate();
-					sql = "DELETE FROM GOAL WHERE GOAL_SEQ=?";
 					conn = DBManager.getConnection();
 					pstmt = conn.prepareStatement(sql);
 					pstmt.setInt(1, GOAL_SEQ);
-					
 					pstmt.executeUpdate();
+					
+					sql = "DELETE FROM GOAL WHERE GOAL_SEQ=?";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setInt(1, GOAL_SEQ);
+					pstmt.executeUpdate();
+					
 					System.out.println("--------------------------------------------------");
 					System.out.println("삭제되었습니다.");
 					System.out.println("--------------------------------------------------");
@@ -402,18 +423,52 @@ public class Goal {
 			Connection conn = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-		
-			token();
 			
-			selectGoalNoBack();
-			System.out.println("--------------------------------------------------");
-			System.out.println("달성할 소목표의 번호를 입력해주세요.");
-			System.out.println("--------------------------------------------------");
-			System.out.print("입력 > ");
-			int finishNum = sc.nextInt();
-			
-			try{
-				if(finishNum <= 0) {
+			// 토큰 수
+			try {
+				String sql = "SELECT SUM(TOKEN_AMOUNT) FROM token WHERE TOKEN_HISTORY='루틴'";
+				conn = DBManager.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				int plus=0;
+				if(rs.next()) {
+					if(rs.getString(1) != null) {
+					plus=rs.getInt(1);
+					}else if(rs.getString(1) == null){
+						plus=0;
+					}
+				}
+				sql = "SELECT SUM(TOKEN_AMOUNT) FROM token WHERE TOKEN_HISTORY ='목표'";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				
+				int miners=0;
+				if(rs.next()) {
+					if(rs.getString(1) != null) {
+					miners=rs.getInt(1);
+					} else if(rs.getString(1) == null){
+						miners=0;
+					}
+				}
+				int CurrToken = plus-miners;
+				System.out.println("--------------------------------------------------");
+				System.out.printf("현재토큰수: %s개\n",plus-miners);
+				
+				if(CurrToken<=0) {
+					System.out.println("달성할 토큰의 수가 부족합니다.");
+					System.out.println("--------------------------------------------------");
+					goalManu();
+				}
+				
+				selectGoalNoBack();
+				
+				System.out.println("--------------------------------------------------");
+				System.out.println("달성할 소목표의 번호를 입력해주세요.");
+				System.out.println("--------------------------------------------------");
+				System.out.print("입력 > ");
+				int finishNum = sc.nextInt();
+				
+				if(finishNum <= 0 | Integer.toString(finishNum)=="^[\\D]*$") {
 					System.out.println("--------------------------------------------------");
 					System.out.println("다시 입력해주세요.");
 					System.out.println("--------------------------------------------------");
@@ -421,58 +476,62 @@ public class Goal {
 				} else {
 					finishGoal.setGoalSeq(finishNum);
 				}
-			} catch(Exception e){
-				ABStart abStart = new ABStart();
-				abStart.exit();
-			}
-			int GOAL_SEQ = finishGoal.getGoalSeq();
-			
-			try {	
-				String sql = "SELECT GOAL_SEQ , GOAL_CONTENTS , GOAL_TOKEN FROM Goal WHERE GOAL_SEQ=? order by GOAL_SEQ";
+				
+				int GOAL_SEQ = finishGoal.getGoalSeq();
+				
+				sql = "SELECT GOAL_SEQ , GOAL_CONTENTS , GOAL_TOKEN FROM Goal WHERE GOAL_SEQ=? order by GOAL_SEQ";
 				conn = DBManager.getConnection();
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setInt(1, GOAL_SEQ);
 				rs = pstmt.executeQuery();
-				System.out.println("--------------------------------------------------");
-				System.out.println("번호 | 차감코인 | 내용");
-				System.out.println("--------------------------------------------------");
 				if (rs.next()) {
-					System.out.printf("%3d  |   %3d    | %s\n",rs.getInt("goal_seq"),rs.getInt("goal_token"),rs.getString("goal_contents"));
+					int goalToken = rs.getInt("goal_token");
+					if(CurrToken-goalToken>=0) {
+						System.out.println("--------------------------------------------------");
+						System.out.printf("현재토큰수: %s개\n",plus-miners);
+						System.out.println("==================================================");
+						System.out.println("번호 | 차감코인 | 내용");
+						System.out.println("--------------------------------------------------");
+						System.out.printf("%3d  |   %3d    | %s\n",rs.getInt("goal_seq"),rs.getInt("goal_token"),rs.getString("goal_contents"));
+						System.out.println("==================================================");
+
+					} else {
+						System.out.println("--------------------------------------------------");
+						System.out.printf("현재토큰수 : %d | 필요토큰수 : %d \n", CurrToken, goalToken);
+						System.out.println("달성할 토큰의 수가 부족합니다.");
+						System.out.println("--------------------------------------------------");
+						goalManu();
+					}
+				}
+				
+				System.out.println("--------------------------------------------------");
+				System.out.println("달성하시겠습니까?\n1.확인 | 2.취소");
+				System.out.println("--------------------------------------------------");
+				System.out.print("입력 > ");
+				int yesOrNO = sc.nextInt();
+
+				if(yesOrNO==1) {
+					sql="INSERT INTO TOKEN(TOKEN_SEQ, TOKEN_AMOUNT, TOKEN_HISTORY, GOAL_SEQ) "
+							+ "VALUES (TOKEN_SEQ.NEXTVAL, ?, '목표', ?)";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setInt(1, rs.getInt("goal_token"));
+					pstmt.setInt(2, GOAL_SEQ);
+					pstmt.executeUpdate();
+					
+					System.out.println("--------------------------------------------------");
+					System.out.println("완료되었습니다.");
+					System.out.println("--------------------------------------------------");
+					goalManu();
+				} else {
+					System.out.println("--------------------------------------------------");
+					System.out.println("취소하였습니다.");
+					System.out.println("--------------------------------------------------");
+					goalManu();
 				}
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			
-		System.out.println("--------------------------------------------------");
-		System.out.println("달성하시겠습니까?\n1.확인 | 2.취소");
-		System.out.println("--------------------------------------------------");
-		System.out.print("입력 > ");
-		int yesOrNO = sc.nextInt();
-
-		if(yesOrNO==1) {
-			try {
-				
-				String sql="INSERT INTO TOKEN(TOKEN_SEQ, TOKEN_AMOUNT, TOKEN_HISTORY, GOAL_SEQ) "
-						+ "VALUES (TOKEN_SEQ.NEXTVAL, ?, '목표', ?)";
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, rs.getInt("goal_token"));
-				pstmt.setInt(2, GOAL_SEQ);
-				pstmt.executeUpdate();
-				
-				System.out.println("--------------------------------------------------");
-				System.out.println("완료되었습니다.");
-				System.out.println("--------------------------------------------------");
-				goalManu();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			System.out.println("--------------------------------------------------");
-			System.out.println("취소하였습니다.");
-			System.out.println("--------------------------------------------------");
-			goalManu();
-		}
 		sc.close();
 		DBManager.selectClose(conn, pstmt, rs);
 		return finishGoal;
@@ -499,50 +558,6 @@ public class Goal {
 			} else {
 				System.out.println("다시 입력해주세요.");
 				goalBack();
-			}
-		}
-		// 토큰 수
-		public static void token() {
-			Connection conn = null;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-		
-			
-			try {
-				String sql = "SELECT SUM(TOKEN_AMOUNT) FROM token WHERE TOKEN_HISTORY='루틴'";
-				conn = DBManager.getConnection();
-				pstmt = conn.prepareStatement(sql);
-				rs = pstmt.executeQuery();
-				int plus=0;
-				if(rs.next()) {
-					if(rs.getString(1) != null) {
-					plus=rs.getInt(1);
-					}else if(rs.getString(1) == null){
-						plus=0;
-					}
-				}
-				sql = "SELECT SUM(TOKEN_AMOUNT) FROM token WHERE TOKEN_HISTORY ='목표'";
-				pstmt = conn.prepareStatement(sql);
-				rs = pstmt.executeQuery();
-				
-				int miners=0;
-				if(rs.next()) {
-					if(rs.getString(1) != null) {
-					miners=rs.getInt(1);
-					} else if(rs.getString(1) == null){
-						miners=0;
-					}
-				}
-				System.out.println("--------------------------------------------------");
-				System.out.printf("현재토큰수: %s개\n",plus-miners);
-				
-				if((plus-miners)<=0) {
-					System.out.println("달성할 토큰의 수가 부족합니다.");
-					System.out.println("--------------------------------------------------");
-					goalManu();
-				}
-			}catch(Exception e) {
-				e.printStackTrace();
 			}
 		}
 		
