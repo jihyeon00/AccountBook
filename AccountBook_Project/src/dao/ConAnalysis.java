@@ -22,7 +22,7 @@ public class ConAnalysis {
 	
 	public static void main(String[] args) {
 		
-		selectCategoryMonthAll();
+		selectCategoryManu();
 	}
 	
 	// 소비분석 메뉴를 불러오는 메서드
@@ -350,7 +350,7 @@ public class ConAnalysis {
 		System.out.println("============================================================");
 		System.out.println("[월별확인]");
 		System.out.println("------------------------------------------------------------");
-		System.out.println("1. 모든내역 | 2. 수입내역 | n3. 지출내역 | 4. 돌아가기");
+		System.out.println("1. 모든내역 | 2. 수입내역 | 3. 지출내역 | 4. 돌아가기");
 		System.out.println("------------------------------------------------------------");
 		System.out.println("들어갈 메뉴의 번호를 입력해주세요.");		
 		System.out.println("------------------------------------------------------------");
@@ -627,7 +627,7 @@ public class ConAnalysis {
 		System.out.println("============================================================");
 		System.out.println("[월별확인]");
 		System.out.println("------------------------------------------------------------");
-		System.out.println("1. 모든내역 | 2. 수입내역 | n3. 지출내역 | 4. 돌아가기");
+		System.out.println("1. 모든내역 | 2. 수입내역 | 3. 지출내역 | 4. 돌아가기");
 		System.out.println("------------------------------------------------------------");
 		System.out.println("들어갈 메뉴의 번호를 입력해주세요.");		
 		System.out.println("------------------------------------------------------------");
@@ -904,7 +904,7 @@ public class ConAnalysis {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("============================================================");
-		System.out.println("[카테고리 연도별 확인]");
+		System.out.println("[카테고리별 확인]");
 		System.out.println("------------------------------------------------------------");
 		System.out.println("1. 월별확인 | 2. 연도별확인 | 3. 돌아가기");
 		System.out.println("------------------------------------------------------------");
@@ -915,10 +915,10 @@ public class ConAnalysis {
 		
 		switch(selectManu) {
 		case 1:
-			selectCategoryMonthManu();
+			selectCategoryMonth();
 			break;
 		case 2:
-			selectCategoryYearManu();
+			selectCategoryYear();
 			break;
 		case 3:
 			conAnalysisManu();
@@ -932,45 +932,9 @@ public class ConAnalysis {
 		sc.close();
 	}
 	
-	// 카테고리 월별 내역 메뉴
-	static void selectCategoryMonthManu() {
-		Scanner sc = new Scanner(System.in);
-
-		System.out.println("============================================================");
-		System.out.println("[카테고리 월별 확인]");
-		System.out.println("------------------------------------------------------------");
-		System.out.println("1. 모든내역 | 2. 수입내역 | n3. 지출내역 | 4. 돌아가기");
-		System.out.println("------------------------------------------------------------");
-		System.out.println("들어갈 메뉴의 번호를 입력해주세요.");		
-		System.out.println("------------------------------------------------------------");
-		System.out.print("입력 > ");
-		int selectManu = sc.nextInt();
-		
-		switch(selectManu) {
-		case 1:
-			selectCategoryMonthAll();
-			break;
-		case 2:
-			selectCategoryMonthIn();
-			break;
-		case 3:
-			selectCategoryMonthOut();
-			break;
-		case 4:
-			selectCategoryManu();
-			break;
-		default:
-			System.out.println("------------------------------------------------------------");
-			System.out.println("다시 입력해주세요.");
-			System.out.println("------------------------------------------------------------");
-			selectCategoryMonthManu();
-		}
-		sc.close();
-	}
-	
-	// 카테고리별 월별 모든 내역
-	public static conAnalysisVO selectCategoryMonthAll() {
-		conAnalysisVO selectCategoryMonthAll = new conAnalysisVO();
+	// 카테고리별 월별 내역
+	public static conAnalysisVO selectCategoryMonth() {
+		conAnalysisVO selectCategoryMonth = new conAnalysisVO();
 		String selectMonth;
 		Scanner sc = new Scanner(System.in);
 		
@@ -991,93 +955,51 @@ public class ConAnalysis {
 			selectMonth = sc.next();
 		}
 		
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("\n[카테고리 선택]");
-		System.out.println("--------------------------------------------------------------");
-		int i = 0;
-		for (Category type : cg) {
-			++i;
-			System.out.print(i + "." + type + " ");
-			if (i % 5 == 0) {
-				System.out.println("\n");
-			}
-		}
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("카테고리 번호를 입력하세요. ");
-		System.out.println("--------------------------------------------------------------");
-		System.out.print("입력 > ");
-		int cnum = sc.nextInt();
-
-		while (cnum > 20 || cnum <= 0) {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("카테고리 번호를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-			cnum = sc.nextInt();
-		}
-
-		selectCategoryMonthAll.setCategorySeq(cnum);
-
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
 		try {
-			// 현재 금액을 구하기 위한 SQL
-			String sql = "SELECT SUM(MONEY_WON) FROM MONEYBOOK WHERE MONEY_INOUT='수입' AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYYMM') = ? AND CATEGORY_SEQ = ?";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectMonth);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			int plus = 0;
-			if(rs.next()) {
-				if(rs.getString(1) != null) {
-				plus=rs.getInt(1);
-				}else if(rs.getString(1) == null){
-					plus=0;
-				}
-			}
-			// 지출 금액을 구하기 위한 SQL
-			sql = "SELECT SUM(MONEY_WON) FROM MONEYBOOK WHERE MONEY_INOUT='지출' AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYYMM') = ? AND CATEGORY_SEQ = ?";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectMonth);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			
-			int miners=0;
-			if(rs.next()) {
-				if(rs.getString(1) != null) {
-					miners=rs.getInt(1);
-				} else if(rs.getString(1) == null){
-					miners=0;
-				}
-			}
-			
-			sql = "SELECT TO_CHAR(M.MONEY_DATE,'YYYY/MM/DD') MONEY_DATE, C.CATEGORY_NAME, M.MONEY_INOUT, M.MONEY_WON "
-					+ "FROM MONEYBOOK M, CATEGORY C "
-					+ "WHERE M.CATEGORY_seq = C.CATEGORY_seq "
+			String sql = "SELECT c.category_seq, c.category_name , nvl(sumwon,0)"
+					+ "FROM category C left join"
+					+ " (select category_seq, sum(MONEY_WON) sumwon"
+					+ " from moneybook"
+					+ " where MONEY_INOUT='수입'"
 					+ " AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYYMM') = ?"
-					+ " AND C.CATEGORY_SEQ = ?"
-					+ "ORDER BY MONEY_DATE";
+					+ " group by category_seq ) M"
+					+ " on  c.category_seq = m.category_seq"
+					+ " order by c.category_seq";
 			conn = DBManager.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, selectMonth);
-			pstmt.setInt(2, cnum);
 			rs = pstmt.executeQuery();
 			
+			int[] plus = new int[20];
+			while(rs.next()) {
+				plus[rs.getInt(1)-1]=rs.getInt(3);
+			}
+			
+			sql = "SELECT c.category_seq, c.category_name , nvl(sumwon,0)"
+					+ "FROM category C left join"
+					+ " (select category_seq, sum(MONEY_WON) sumwon"
+					+ " from moneybook"
+					+ " where MONEY_INOUT='지출'"
+					+ " AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYYMM') = ?"
+					+ " group by category_seq ) M"
+					+ " on  c.category_seq = m.category_seq"
+					+ " order by c.category_seq";
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, selectMonth);
+			rs = pstmt.executeQuery();
 			System.out.println("============================================================");
-			System.out.printf("현재금액: %s원 | 수입금액: %s원 | 지출금액: %s원 \n",decFor.format(plus-miners),decFor.format(plus),decFor.format(miners));
+			System.out.printf("%3s\t  %7s\t%15s", "번호", "금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
-			System.out.println("------------------------------------------------------------");
-			if (rs.next()) {
-				do{
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryMonthAll.getCategorySeq() - 1].name());
-				System.out.println();
-				}while (rs.next());
-			} else {
-				System.out.println("입력된 내역이 없습니다.");
+			
+			int[] miners = new int[20];
+			while(rs.next()) {
+				miners[rs.getInt(1)-1] = rs.getInt(3);
+				System.out.printf("%3d\t%12s\t%15s\n", rs.getInt(1), decFor.format(plus[rs.getInt(1)-1]-miners[rs.getInt(1)-1]), rs.getString(2));
 			}
 			System.out.println("============================================================");
 			ConAnalysis.selectCategoryBack();
@@ -1087,262 +1009,12 @@ public class ConAnalysis {
 		sc.close();
 		DBManager.selectClose(conn, pstmt, rs);
 		
-		return selectCategoryMonthAll;
-	}
-	
-	// 카테고리별 월별 수입 내역
-	public static conAnalysisVO selectCategoryMonthIn() {
-		conAnalysisVO selectCategoryMonthIn = new conAnalysisVO();
-		String selectMonth;
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.println("------------------------------------------------------------");
-		System.out.println("확인할 날짜를 입력해주세요.");		
-		System.out.println("------------------------------------------------------------");
-		System.out.print("입력(예시: 202312) > ");
-		
-		selectMonth = sc.next();
-		
-		// selectMonth의 길이 6이 아닐경우와 숫자가 아닐 경우 재입력
-		while (selectMonth.length()!=6 | selectMonth=="^[\\D]*$") {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("확인할 날짜를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-
-			System.out.print("입력(예시: 202312) > ");
-			selectMonth = sc.next();
-		}
-		
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("\n[카테고리 선택]");
-		System.out.println("--------------------------------------------------------------");
-		int i = 0;
-		for (Category type : cg) {
-			++i;
-			System.out.print(i + "." + type + " ");
-			if (i % 5 == 0) {
-				System.out.println("\n");
-			}
-		}
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("카테고리 번호를 입력하세요. ");
-		System.out.println("--------------------------------------------------------------");
-		System.out.print("입력 > ");
-		int cnum = sc.nextInt();
-
-		while (cnum > 20 || cnum <= 0) {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("카테고리 번호를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-			cnum = sc.nextInt();
-		}
-
-		selectCategoryMonthIn.setCategorySeq(cnum);
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			// 수입 금액을 구하기 위한 SQL
-			String sql = "SELECT SUM(MONEY_WON) FROM MONEYBOOK WHERE MONEY_INOUT='수입' AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYYMM') = ? AND CATEGORY_SEQ = ?";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectMonth);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			int plus = 0;
-			if(rs.next()) {
-				if(rs.getString(1) != null) {
-				plus=rs.getInt(1);
-				}else if(rs.getString(1) == null){
-					plus=0;
-				}
-			}
-			sql = "SELECT TO_CHAR(M.MONEY_DATE,'YYYY/MM/DD') MONEY_DATE, C.CATEGORY_NAME, M.MONEY_INOUT, M.MONEY_WON "
-					+ "FROM MONEYBOOK M, CATEGORY C "
-					+ "WHERE M.CATEGORY_seq = C.CATEGORY_seq "
-					+ " AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYYMM') = ?"
-					+ " AND C.CATEGORY_SEQ = ?"
-					+ " AND M.MONEY_INOUT = '수입'"
-					+ "ORDER BY MONEY_DATE";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectMonth);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			
-			System.out.println("============================================================");
-			System.out.printf("수입금액: %s원\n",decFor.format(plus));
-			System.out.println("------------------------------------------------------------");
-			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
-			System.out.println("------------------------------------------------------------");
-			if (rs.next()) {
-				do{
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryMonthIn.getCategorySeq() - 1].name());
-				System.out.println();
-				}while (rs.next());
-			} else {
-				System.out.println("입력된 내역이 없습니다.");
-			}
-			System.out.println("============================================================");
-			ConAnalysis.selectCategoryBack();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		sc.close();
-		DBManager.selectClose(conn, pstmt, rs);
-		
-		return selectCategoryMonthIn;
-	}
-	
-	// 카테고리별 월별 지출 내역
-	public static conAnalysisVO selectCategoryMonthOut() {
-		conAnalysisVO selectCategoryMonthOut = new conAnalysisVO();
-		String selectMonth;
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.println("------------------------------------------------------------");
-		System.out.println("확인할 날짜를 입력해주세요.");		
-		System.out.println("------------------------------------------------------------");
-		System.out.print("입력(예시: 202312) > ");
-		
-		selectMonth = sc.next();
-		
-		// selectMonth의 길이 6이 아닐경우와 숫자가 아닐 경우 재입력
-		while (selectMonth.length()!=6 | selectMonth=="^[\\D]*$") {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("확인할 날짜를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-
-			System.out.print("입력(예시: 202312) > ");
-			selectMonth = sc.next();
-		}
-		
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("\n[카테고리 선택]");
-		System.out.println("--------------------------------------------------------------");
-		int i = 0;
-		for (Category type : cg) {
-			++i;
-			System.out.print(i + "." + type + " ");
-			if (i % 5 == 0) {
-				System.out.println("\n");
-			}
-		}
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("카테고리 번호를 입력하세요. ");
-		System.out.println("--------------------------------------------------------------");
-		System.out.print("입력 > ");
-		int cnum = sc.nextInt();
-
-		while (cnum > 20 || cnum <= 0) {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("카테고리 번호를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-			cnum = sc.nextInt();
-		}
-
-		selectCategoryMonthOut.setCategorySeq(cnum);
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			// 지출 금액을 구하기 위한 SQL
-			String sql = "SELECT SUM(MONEY_WON) FROM MONEYBOOK WHERE MONEY_INOUT='지출' AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYYMM') = ? AND CATEGORY_SEQ = ?";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectMonth);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			
-			int miners=0;
-			if(rs.next()) {
-				if(rs.getString(1) != null) {
-					miners=rs.getInt(1);
-				} else if(rs.getString(1) == null){
-					miners=0;
-				}
-			}
-			
-			sql = "SELECT TO_CHAR(M.MONEY_DATE,'YYYY/MM/DD') MONEY_DATE, C.CATEGORY_NAME, M.MONEY_INOUT, M.MONEY_WON "
-					+ "FROM MONEYBOOK M, CATEGORY C "
-					+ "WHERE M.CATEGORY_seq = C.CATEGORY_seq "
-					+ " AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYYMM') = ?"
-					+ " AND C.CATEGORY_SEQ = ?"
-					+ " AND M.MONEY_INOUT = '지출'"
-					+ "ORDER BY MONEY_DATE";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectMonth);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			
-			System.out.println("============================================================");
-			System.out.printf("지출금액: %s원 \n",decFor.format(miners));
-			System.out.println("------------------------------------------------------------");
-			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
-			System.out.println("------------------------------------------------------------");
-			if (rs.next()) {
-				do{
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryMonthOut.getCategorySeq() - 1].name());
-				System.out.println();
-				}while (rs.next());
-			} else {
-				System.out.println("입력된 내역이 없습니다.");
-			}
-			System.out.println("============================================================");
-			ConAnalysis.selectCategoryBack();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		sc.close();
-		DBManager.selectClose(conn, pstmt, rs);
-		
-		return selectCategoryMonthOut;
+		return selectCategoryMonth;
 	}
 
-	// 카테고리별 연도별 내역 메뉴
-	static void selectCategoryYearManu() {
-		Scanner sc = new Scanner(System.in);
-
-		System.out.println("============================================================");
-		System.out.println("[카테고리 연도별확인]");
-		System.out.println("------------------------------------------------------------");
-		System.out.println("1. 모든내역 | 2. 수입내역 | 3. 지출내역 | 4. 돌아가기");
-		System.out.println("------------------------------------------------------------");
-		System.out.println("들어갈 메뉴의 번호를 입력해주세요.");		
-		System.out.println("------------------------------------------------------------");
-		System.out.print("입력 > ");
-		int selectManu = sc.nextInt();
-		
-		switch(selectManu) {
-		case 1:
-			selectCategoryYearAll();
-			break;
-		case 2:
-			selectCategoryYearIn();
-			break;
-		case 3:
-			selectCategoryYearOut();
-			break;
-		case 4:
-			selectCategoryManu();
-			break;
-		default:
-			System.out.println("------------------------------------------------------------");
-			System.out.println("다시 입력해주세요.");
-			System.out.println("------------------------------------------------------------");
-			selectCategoryYearManu();
-		}
-		sc.close();
-	}
-	
-	// 카테고리별 연도별 모든 내역
-	public static conAnalysisVO selectCategoryYearAll() {
-		conAnalysisVO selectCategoryYearAll = new conAnalysisVO();
+	// 카테고리별 연도별 내역
+	public static conAnalysisVO selectCategoryYear() {
+		conAnalysisVO selectCategoryYear = new conAnalysisVO();
 		String selectYear;
 		Scanner sc = new Scanner(System.in);
 		
@@ -1362,94 +1034,52 @@ public class ConAnalysis {
 			System.out.print("입력(예시: 2023) > ");
 			selectYear = sc.next();
 		}
-		
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("\n[카테고리 선택]");
-		System.out.println("--------------------------------------------------------------");
-		int i = 0;
-		for (Category type : cg) {
-			++i;
-			System.out.print(i + "." + type + " ");
-			if (i % 5 == 0) {
-				System.out.println("\n");
-			}
-		}
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("카테고리 번호를 입력하세요. ");
-		System.out.println("--------------------------------------------------------------");
-		System.out.print("입력 > ");
-		int cnum = sc.nextInt();
-
-		while (cnum > 20 || cnum <= 0) {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("카테고리 번호를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-			cnum = sc.nextInt();
-		}
-
-		selectCategoryYearAll.setCategorySeq(cnum);
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
 		try {
-			// 현재 금액을 구하기 위한 SQL
-			String sql = "SELECT SUM(MONEY_WON) FROM MONEYBOOK WHERE MONEY_INOUT='수입' AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYY') = ? AND CATEGORY_SEQ = ?";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectYear);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			int plus = 0;
-			if(rs.next()) {
-				if(rs.getString(1) != null) {
-				plus=rs.getInt(1);
-				}else if(rs.getString(1) == null){
-					plus=0;
-				}
-			}
-			// 지출 금액을 구하기 위한 SQL
-			sql = "SELECT SUM(MONEY_WON) FROM MONEYBOOK WHERE MONEY_INOUT='지출' AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYY') = ? AND CATEGORY_SEQ = ?";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectYear);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			
-			int miners=0;
-			if(rs.next()) {
-				if(rs.getString(1) != null) {
-					miners=rs.getInt(1);
-				} else if(rs.getString(1) == null){
-					miners=0;
-				}
-			}
-			
-			sql = "SELECT TO_CHAR(M.MONEY_DATE,'YYYY/MM/DD') MONEY_DATE, C.CATEGORY_NAME, M.MONEY_INOUT, M.MONEY_WON "
-					+ "FROM MONEYBOOK M, CATEGORY C "
-					+ "WHERE M.CATEGORY_seq = C.CATEGORY_seq "
+			String sql = "SELECT c.category_seq, c.category_name , nvl(sumwon,0)"
+					+ "FROM category C left join"
+					+ " (select category_seq, sum(MONEY_WON) sumwon"
+					+ " from moneybook"
+					+ " where MONEY_INOUT='수입'"
 					+ " AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYY') = ?"
-					+ " AND C.CATEGORY_SEQ = ?"
-					+ "ORDER BY MONEY_DATE";
+					+ " group by category_seq ) M"
+					+ " on  c.category_seq = m.category_seq"
+					+ " order by c.category_seq";
 			conn = DBManager.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, selectYear);
-			pstmt.setInt(2, cnum);
 			rs = pstmt.executeQuery();
 			
+			int[] plus = new int[20];
+			while(rs.next()) {
+				plus[rs.getInt(1)-1]=rs.getInt(3);
+			}
+			
+			sql = "SELECT c.category_seq, c.category_name , nvl(sumwon,0)"
+					+ "FROM category C left join"
+					+ " (select category_seq, sum(MONEY_WON) sumwon"
+					+ " from moneybook"
+					+ " where MONEY_INOUT='지출'"
+					+ " AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYY') = ?"
+					+ " group by category_seq ) M"
+					+ " on  c.category_seq = m.category_seq"
+					+ " order by c.category_seq";
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, selectYear);
+			rs = pstmt.executeQuery();
 			System.out.println("============================================================");
-			System.out.printf("현재금액: %s원 | 수입금액: %s원 | 지출금액: %s원 \n",decFor.format(plus-miners),decFor.format(plus),decFor.format(miners));
+			System.out.printf("%3s\t  %7s\t%15s", "번호", "금액", "카테고리\n");
 			System.out.println("------------------------------------------------------------");
-			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
-			System.out.println("------------------------------------------------------------");
-			if (rs.next()) {
-				do{
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryYearAll.getCategorySeq() - 1].name());
-				System.out.println();
-				}while (rs.next());
-			} else {
-				System.out.println("입력된 내역이 없습니다.");
+			
+			int[] miners = new int[20];
+			while(rs.next()) {
+				miners[rs.getInt(1)-1] = rs.getInt(3);
+				System.out.printf("%3d\t%12s\t%15s\n", rs.getInt(1), decFor.format(plus[rs.getInt(1)-1]-miners[rs.getInt(1)-1]), rs.getString(2));
 			}
 			System.out.println("============================================================");
 			ConAnalysis.selectCategoryBack();
@@ -1459,222 +1089,8 @@ public class ConAnalysis {
 		sc.close();
 		DBManager.selectClose(conn, pstmt, rs);
 		
-		return selectCategoryYearAll;
+		return selectCategoryYear;
 	}
-	
-	// 카테고리별 연도별 수입 내역
-	public static conAnalysisVO selectCategoryYearIn() {
-		conAnalysisVO selectCategoryYearIn = new conAnalysisVO();
-		String selectYear;
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.println("------------------------------------------------------------");
-		System.out.println("확인할 날짜를 입력해주세요.");		
-		System.out.println("------------------------------------------------------------");
-		System.out.print("입력(예시: 2023) > ");
-		
-		selectYear = sc.next();
-		
-		// selectYear의 길이 4이 아닐경우와 숫자가 아닐 경우 재입력
-		while (selectYear.length()!=4 | selectYear=="^[\\D]*$") {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("확인할 날짜를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-
-			System.out.print("입력(예시: 2023) > ");
-			selectYear = sc.next();
-		}
-		
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("\n[카테고리 선택]");
-		System.out.println("--------------------------------------------------------------");
-		int i = 0;
-		for (Category type : cg) {
-			++i;
-			System.out.print(i + "." + type + " ");
-			if (i % 5 == 0) {
-				System.out.println("\n");
-			}
-		}
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("카테고리 번호를 입력하세요. ");
-		System.out.println("--------------------------------------------------------------");
-		System.out.print("입력 > ");
-		int cnum = sc.nextInt();
-
-		while (cnum > 20 || cnum <= 0) {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("카테고리 번호를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-			cnum = sc.nextInt();
-		}
-
-		selectCategoryYearIn.setCategorySeq(cnum);
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			// 현재 금액을 구하기 위한 SQL
-			String sql = "SELECT SUM(MONEY_WON) FROM MONEYBOOK WHERE MONEY_INOUT='수입' AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYY') = ? AND CATEGORY_SEQ = ?";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectYear);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			int plus = 0;
-			if(rs.next()) {
-				if(rs.getString(1) != null) {
-				plus=rs.getInt(1);
-				}else if(rs.getString(1) == null){
-					plus=0;
-				}
-			}
-			sql = "SELECT TO_CHAR(M.MONEY_DATE,'YYYY/MM/DD') MONEY_DATE, C.CATEGORY_NAME, M.MONEY_INOUT, M.MONEY_WON "
-					+ "FROM MONEYBOOK M, CATEGORY C "
-					+ "WHERE M.CATEGORY_seq = C.CATEGORY_seq "
-					+ " AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYY') = ?"
-					+ " AND C.CATEGORY_SEQ = ?"
-					+ " AND M.MONEY_INOUT= '수입'"
-					+ "ORDER BY MONEY_DATE";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectYear);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			System.out.println("============================================================");
-			System.out.printf("수입금액: %s원\n",decFor.format(plus));
-			System.out.println("------------------------------------------------------------");
-			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
-			System.out.println("------------------------------------------------------------");
-			if (rs.next()) {
-				do{
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryYearIn.getCategorySeq() - 1].name());
-				System.out.println();
-				}while (rs.next());
-			} else {
-				System.out.println("입력된 내역이 없습니다.");
-			}
-			System.out.println("============================================================");
-			ConAnalysis.selectCategoryBack();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		sc.close();
-		DBManager.selectClose(conn, pstmt, rs);
-		
-		return selectCategoryYearIn;
-	}
-	
-	// 카테고리별 연도별 지출 내역
-	public static conAnalysisVO selectCategoryYearOut() {
-		conAnalysisVO selectCategoryYearOut = new conAnalysisVO();
-		String selectYear;
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.println("------------------------------------------------------------");
-		System.out.println("확인할 날짜를 입력해주세요.");		
-		System.out.println("------------------------------------------------------------");
-		System.out.print("입력(예시: 2023) > ");
-		
-		selectYear = sc.next();
-		
-		// selectYear의 길이 4이 아닐경우와 숫자가 아닐 경우 재입력
-		while (selectYear.length()!=4 | selectYear=="^[\\D]*$") {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("확인할 날짜를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-
-			System.out.print("입력(예시: 2023) > ");
-			selectYear = sc.next();
-		}
-		
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("\n[카테고리 선택]");
-		System.out.println("--------------------------------------------------------------");
-		int i = 0;
-		for (Category type : cg) {
-			++i;
-			System.out.print(i + "." + type + " ");
-			if (i % 5 == 0) {
-				System.out.println("\n");
-			}
-		}
-		System.out.println("--------------------------------------------------------------");
-		System.out.println("카테고리 번호를 입력하세요. ");
-		System.out.println("--------------------------------------------------------------");
-		System.out.print("입력 > ");
-		int cnum = sc.nextInt();
-
-		while (cnum > 20 || cnum <= 0) {
-			System.out.println("------------------------------------------------------------");
-			System.out.println("카테고리 번호를 다시 입력해주세요.");		
-			System.out.println("------------------------------------------------------------");
-			cnum = sc.nextInt();
-		}
-
-		selectCategoryYearOut.setCategorySeq(cnum);
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			// 지출 금액을 구하기 위한 SQL
-			String sql = "SELECT SUM(MONEY_WON) FROM MONEYBOOK WHERE MONEY_INOUT='지출' AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYY') = ? AND CATEGORY_SEQ = ?";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectYear);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			
-			int miners=0;
-			if(rs.next()) {
-				if(rs.getString(1) != null) {
-					miners=rs.getInt(1);
-				} else if(rs.getString(1) == null){
-					miners=0;
-				}
-			}
-			
-			sql = "SELECT TO_CHAR(M.MONEY_DATE,'YYYY/MM/DD') MONEY_DATE, C.CATEGORY_NAME, M.MONEY_INOUT, M.MONEY_WON "
-					+ "FROM MONEYBOOK M, CATEGORY C "
-					+ "WHERE M.CATEGORY_seq = C.CATEGORY_seq "
-					+ " AND TO_CHAR(TO_DATE(MONEY_DATE),'YYYY') = ?"
-					+ " AND C.CATEGORY_SEQ = ?"
-					+ " AND M.MONEY_INOUT='지출'"
-					+ "ORDER BY MONEY_DATE";
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, selectYear);
-			pstmt.setInt(2, cnum);
-			rs = pstmt.executeQuery();
-			
-			System.out.println("============================================================");
-			System.out.printf("지출금액: %s원 \n",decFor.format(miners));			
-			System.out.println("------------------------------------------------------------");
-			System.out.printf("%6s %7s %7s %15s", "날짜" ,"수입/지출","금액", "카테고리\n");
-			System.out.println("------------------------------------------------------------");
-			if (rs.next()) {
-				do{
-				System.out.printf("%s %4s %13s %15s", rs.getString("money_date"), rs.getString("money_inout"),decFor.format(rs.getInt("money_won")), cg[selectCategoryYearOut.getCategorySeq() - 1].name());
-				System.out.println();
-				}while (rs.next());
-			} else {
-				System.out.println("입력된 내역이 없습니다.");
-			}
-			System.out.println("============================================================");
-			ConAnalysis.selectCategoryBack();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		sc.close();
-		DBManager.selectClose(conn, pstmt, rs);
-		
-		return selectCategoryYearOut;
-	}
-	
 	
 	// conAnalysisManu로 돌아가기
 	public static void conAnalysisBack() {
