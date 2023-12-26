@@ -18,6 +18,7 @@ public class Goal {
 	// 소목표 메뉴
 		public static void goalManu() {
 			Scanner sc = new Scanner(System.in);
+			ABStart abStart = new ABStart();
 			
 			System.out.println("\n[소목표]");
 			System.out.println("------------------------------------------------------------------");
@@ -45,7 +46,7 @@ public class Goal {
 					finishGoal();
 					break;
 				case 6:
-					selectGoal();
+					abStart.stManu();
 					break;
 				default:
 					System.out.println("------------------------------------------------------");

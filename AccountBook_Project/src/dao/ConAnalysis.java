@@ -71,7 +71,7 @@ public class ConAnalysis {
 		System.out.println("============================================================");
 		System.out.println("[일별확인]");
 		System.out.println("------------------------------------------------------------");
-		System.out.println("1. 모든내역 | 2. 수입내역 | n3. 지출내역 | 4. 돌아가기");
+		System.out.println("1. 모든내역 | 2. 수입내역 | 3. 지출내역 | 4. 돌아가기");
 		System.out.println("------------------------------------------------------------");
 		System.out.println("들어갈 메뉴의 번호를 입력해주세요.");		
 		System.out.println("------------------------------------------------------------");
@@ -1311,7 +1311,7 @@ public class ConAnalysis {
 		System.out.println("============================================================");
 		System.out.println("[카테고리 연도별확인]");
 		System.out.println("------------------------------------------------------------");
-		System.out.println("1. 모든내역 | 2. 수입내역 | n3. 지출내역 | 4. 돌아가기");
+		System.out.println("1. 모든내역 | 2. 수입내역 | 3. 지출내역 | 4. 돌아가기");
 		System.out.println("------------------------------------------------------------");
 		System.out.println("들어갈 메뉴의 번호를 입력해주세요.");		
 		System.out.println("------------------------------------------------------------");
@@ -1320,13 +1320,13 @@ public class ConAnalysis {
 		
 		switch(selectManu) {
 		case 1:
-//			selectCategoryYearAll();
+			selectCategoryYearAll();
 			break;
 		case 2:
-//			selectCategoryYearIn();
+			selectCategoryYearIn();
 			break;
 		case 3:
-//			selectCategoryYearOut();
+			selectCategoryYearOut();
 			break;
 		case 4:
 			selectCategoryManu();
