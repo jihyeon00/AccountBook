@@ -171,7 +171,7 @@ public class ABRoutine {
 				
 				if(routine.getROUTINE_CONTENTS().length()>=25) {
 					System.out.printf("%s\t%s\t\t%s\n",num2, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else if(routine.getROUTINE_CONTENTS().length()>=19) {
+				} else if(routine.getROUTINE_CONTENTS().length()>=17) {
 					System.out.printf("%s\t%s\t\t\t%s\n",num2, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
 				} else if(routine.getROUTINE_CONTENTS().length()>=12) {
 					System.out.printf("%s\t%s\t\t\t\t%s\n",num2, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
