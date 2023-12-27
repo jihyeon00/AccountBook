@@ -66,15 +66,13 @@ public class ABStart {
 			
 			double rand = Math.random();
 			int value = (int)(rand * ment.length)+1;
-					
-			System.out.printf("30일동안 %s의 내역이 가장 많이 등록되었네요. %s\n",cg[money.getCATEGORY_SEQ()-1],ment[value-1]);
+			System.out.printf("%s\n30일동안 가장 많이 \n'%s'의 내역을 총 '%s'원 사용하셨습니다. \n\n",ment[value-1],cg[money.getCATEGORY_SEQ()-1], decFor.format(money.getMONEY_WON()));
 			
-			System.out.printf("총 %s원 사용하셨습니다.\n\n", decFor.format(money.getMONEY_WON()));
 		} catch(ArrayIndexOutOfBoundsException a) {
-			System.out.println("작성된 가계부 내용이 없습니다.");
+			System.out.println("최근 작성된 가계부 내용이 없습니다.");
 			System.out.println("------------------------------------------------------------------------");
 		} catch(Exception e) {
-			e.printStackTrace();
+			start();
 		}
 		
 			try {
@@ -129,7 +127,7 @@ public class ABStart {
 				}
 				System.out.printf("현재토큰수: %s개\n",decFor.format(plus-miners));
 			}catch(Exception e) {
-				e.printStackTrace();
+				start();
 			}
 		
 		DBManager.close(conn, pstmt, rs);
@@ -170,7 +168,7 @@ public class ABStart {
 			if(row!=0) {
 				System.out.printf("\n[오늘 등록한 내용]\n");
 				System.out.println("------------------------------------------------------------------------");
-				System.out.printf("%s \t\t %s \t %s \t %s\n", "날짜", "카테고리", "수입/지출", "금액");
+				System.out.printf("%s\t\t%s\t\t%s\t\t\t%s\n", "날짜", "수입/지출","카테고리", "금액");
 				System.out.println("------------------------------------------------------------------------");
 			} else {
 				System.out.println("\n[가계부 및 자기개발 프로그램]");
@@ -178,13 +176,13 @@ public class ABStart {
 			
 			rs.beforeFirst();
 			while(rs.next()) {
-				if (cg[rs.getInt("CATEGORY_SEQ")-1].name().length() >= 5) {
-					System.out.printf("%s \t %s\t %s \t\t %s원\n", rs.getString(1),
-							cg[rs.getInt("CATEGORY_SEQ")-1].name(), rs.getString("MONEY_INOUT"),
+				if (cg[rs.getInt("CATEGORY_SEQ")-1].name().length() >= 6) {
+					System.out.printf("%s\t%s\t\t%s\t\t%s원\n", rs.getString(1), rs.getString("MONEY_INOUT"),
+							cg[rs.getInt("CATEGORY_SEQ")-1].name(), 
 							decFor.format(rs.getInt("MONEY_WON")));
 				} else {
-					System.out.printf("%s \t %s\t\t %s \t\t %s원\n", rs.getString(1),
-							cg[rs.getInt("CATEGORY_SEQ")-1].name(), rs.getString("MONEY_INOUT"),
+					System.out.printf("%s\t%s\t\t%s\t\t\t%s원\n", rs.getString(1), rs.getString("MONEY_INOUT"),
+							cg[rs.getInt("CATEGORY_SEQ")-1].name(), 
 							decFor.format(rs.getInt("MONEY_WON")));
 				}
 			}
@@ -209,7 +207,7 @@ public class ABStart {
 					start();
 					break;
 			}
-		}catch(Exception e){e.printStackTrace();}
+		}catch(Exception e){start();}
 		DBManager.close(conn, pstmt, rs);
 	}
 	
