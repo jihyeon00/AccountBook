@@ -99,16 +99,13 @@ public class ABCreate {
 
 		System.out.println("\n[입력된 내용]");
 		System.out.println("------------------------------------------------------------------------");
-		System.out.printf("%s\t\t %s \t %s \t %s\n", "날짜", "카테고리", "수입/지출", "금액");
+		System.out.printf("%s\t\t%s\t\t%s\t\t\t%s\n", "날짜", "수입/지출", "카테고리", "금액");
 		System.out.println("------------------------------------------------------------------------");
 
-		if (cg[cnum - 1].name().length() >= 5) {
-			System.out.printf("%s \t %s\t %s \t\t %s원\n", money.getMONEY_DATE(), cg[money.getCATEGORY_SEQ() - 1].name(),
-					money.getMONEY_INOUT(), decFor.format(money.getMONEY_WON()));
+		if (cg[cnum - 1].name().length() >= 6) {
+			System.out.printf("%s\t%s\t\t%s\t\t%s원\n", money.getMONEY_DATE(), money.getMONEY_INOUT() ,cg[money.getCATEGORY_SEQ() - 1].name(), decFor.format(money.getMONEY_WON()));
 		} else {
-			System.out.printf("%s \t %s \t\t %s \t\t %s원\n", money.getMONEY_DATE(),
-					cg[money.getCATEGORY_SEQ() - 1].name(), money.getMONEY_INOUT(),
-					decFor.format(money.getMONEY_WON()));
+			System.out.printf("%s\t%s\t\t%s\t\t\t%s원\n", money.getMONEY_DATE(), money.getMONEY_INOUT() ,cg[money.getCATEGORY_SEQ() - 1].name(), decFor.format(money.getMONEY_WON()));
 		}
 		System.out.println("------------------------------------------------------------------------");
 		System.out.println("위 내용을 저장한다. : 1.확인 | 2.취소");
@@ -129,7 +126,9 @@ public class ABCreate {
 				System.out.println("\n입력한 내용이 저장되었습니다.");
 				DBManager.close(conn, pstmt, null);
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				System.out.println("\n잘못된 값을 입력하셨습니다.\n");
+				mainManu();
 			}
 		}
 		mainManu();
@@ -172,7 +171,7 @@ public class ABCreate {
 			System.out.println("------------------------------------------------------------------------");
 			System.out.printf("\n[%s 가계부 내역]\n",money.getMONEY_DATE());
 			System.out.println("------------------------------------------------------------------------");
-			System.out.printf("%s \t %s \t %s \t %s\n", "번호", "카테고리", "수입/지출", "금액");
+			System.out.printf("%s\t%s\t\t%s\t\t\t%s\n", "번호", "수입/지출","카테고리", "금액");
 			System.out.println("------------------------------------------------------------------------");
 			while (rs.next()) {
 				array[num2] = rs.getInt("MONEY_SEQ");
@@ -181,13 +180,13 @@ public class ABCreate {
 				money.setCATEGORY_SEQ(rs.getInt("CATEGORY_SEQ"));
 				money.setMONEY_INOUT(rs.getString("MONEY_INOUT"));
 				money.setMONEY_WON(rs.getInt("MONEY_WON"));
-				if (cg[money.getCATEGORY_SEQ() - 1].name().length() >= 5) {
-					System.out.printf("%s \t %s\t %s \t\t %s원\n", num2,
-							cg[money.getCATEGORY_SEQ() - 1].name(), money.getMONEY_INOUT(),
+				if (cg[money.getCATEGORY_SEQ() - 1].name().length() >= 6) {
+					System.out.printf("%s\t%s\t\t%s\t\t%s원\n", num2, money.getMONEY_INOUT(),
+							cg[money.getCATEGORY_SEQ() - 1].name(), 
 							decFor.format(money.getMONEY_WON()));
 				} else {
-					System.out.printf("%s \t %s \t\t %s \t\t %s원\n", num2,
-							cg[money.getCATEGORY_SEQ() - 1].name(), money.getMONEY_INOUT(),
+					System.out.printf("%s\t%s\t\t%s\t\t\t%s원\n", num2, money.getMONEY_INOUT(),
+							cg[money.getCATEGORY_SEQ() - 1].name(), 
 							decFor.format(money.getMONEY_WON()));
 				}
 			}
@@ -195,7 +194,9 @@ public class ABCreate {
 			DBManager.close(conn, pstmt, rs);
 			
 			}catch(Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				System.out.println("\n잘못된 값을 입력하셨습니다.\n");
+				mainManu();
 			}
 		return array;
 	}
@@ -329,7 +330,7 @@ public class ABCreate {
 			System.out.println("\n------------------------------------------------------------------------");
 			System.out.printf("\n[%d번의 수정할 내용]\n",num2);
 			System.out.println("------------------------------------------------------------------------");
-			System.out.printf("%s \t %s \t\t %s \t %s \t %s\n", "비교", "날짜", "카테고리", "수입/지출", "금액");
+			System.out.printf("%s\t%s\t\t%s\t\t%s\t\t%s\n", "비교", "날짜", "수입/지출", "카테고리", "금액");
 			System.out.println("------------------------------------------------------------------------");
 
 			sql = "SELECT TO_CHAR(MONEY_DATE,'YYYY-MM-DD') DATE1, CATEGORY_SEQ, MONEY_INOUT, MONEY_WON "
@@ -338,24 +339,24 @@ public class ABCreate {
 			pstmt.setInt(1, money.getMONEY_SEQ());
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				if (cg[rs.getInt("CATEGORY_SEQ")-1].name().length() >= 5) {
-					System.out.printf("%s \t %s \t %s\t %s \t\t %s원\n", "[수정전]", rs.getString(1),
-							cg[rs.getInt("CATEGORY_SEQ")-1].name(), rs.getString("MONEY_INOUT"),
+				if (cg[rs.getInt("CATEGORY_SEQ")-1].name().length() >= 6) {
+					System.out.printf("%s\t%s\t%s\t\t%s\t%s원\n", "[수정전]", rs.getString(1), rs.getString("MONEY_INOUT"),
+							cg[rs.getInt("CATEGORY_SEQ")-1].name(), 
 							decFor.format(rs.getInt("MONEY_WON")));
 				} else {
-					System.out.printf("%s \t %s \t %s\t\t %s \t\t %s원\n", "[수정전]", rs.getString(1),
-							cg[rs.getInt("CATEGORY_SEQ")-1].name(), rs.getString("MONEY_INOUT"),
+					System.out.printf("%s\t%s\t%s\t\t%s\t\t%s원\n", "[수정전]", rs.getString(1), rs.getString("MONEY_INOUT"),
+							cg[rs.getInt("CATEGORY_SEQ")-1].name(), 
 							decFor.format(rs.getInt("MONEY_WON")));
 				}
 
 				
-				if (cg[cnum - 1].name().length() >= 5) {
-					System.out.printf("%s \t %s \t %s\t %s \t\t %s원\n", "[수정후]", money.getMONEY_DATE(),
-							cg[cnum - 1].name(), money.getMONEY_INOUT(),
+				if (cg[cnum - 1].name().length() >= 6) {
+					System.out.printf("%s\t%s\t%s\t\t%s\t%s원\n", "[수정후]", money.getMONEY_DATE(), money.getMONEY_INOUT(),
+							cg[cnum - 1].name(), 
 							decFor.format(money.getMONEY_WON()));
 				} else {
-					System.out.printf("%s \t %s \t %s \t\t %s \t\t %s원\n", "[수정후]", money.getMONEY_DATE(),
-							cg[cnum - 1].name(), money.getMONEY_INOUT(),
+					System.out.printf("%s\t%s\t%s\t\t%s\t\t%s원\n", "[수정후]", money.getMONEY_DATE(), money.getMONEY_INOUT(),
+							cg[cnum - 1].name(), 
 							decFor.format(money.getMONEY_WON()));
 				}
 				System.out.println("------------------------------------------------------------------------");
@@ -380,7 +381,8 @@ public class ABCreate {
 			}
 			DBManager.close(conn, pstmt, rs);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("\n잘못된 값을 입력하셨습니다.\n");
+			mainManu();
 		}
 		mainManu();
 	}
@@ -413,7 +415,7 @@ public class ABCreate {
 			System.out.println("\n------------------------------------------------------------------------");
 			System.out.printf("\n[%d번의 삭제할 내용]\n",num2);
 			System.out.println("------------------------------------------------------------------------");
-			System.out.printf("%s \t %s \t\t %s \t %s \t %s\n", "비고", "날짜", "카테고리", "수입/지출", "금액");
+			System.out.printf("%s\t%s\t\t%s\t\t%s\t\t%s\n", "비고", "날짜", "수입/지출", "카테고리",  "금액");
 			System.out.println("------------------------------------------------------------------------");
 
 			sql = "" + "SELECT MONEY_SEQ,  TO_CHAR(MONEY_DATE,'YYYY-MM-DD') DATE1, CATEGORY_SEQ, MONEY_INOUT, MONEY_WON "
@@ -422,13 +424,13 @@ public class ABCreate {
 			pstmt.setInt(1, money.getMONEY_SEQ());
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				if (cg[rs.getInt("CATEGORY_SEQ")-1].name().length() >= 5) {
-					System.out.printf("%s \t %s \t %s\t %s \t\t %s원\n", "[삭제]", rs.getString(2),
-							cg[rs.getInt("CATEGORY_SEQ")-1].name(), rs.getString("MONEY_INOUT"),
+				if (cg[rs.getInt("CATEGORY_SEQ")-1].name().length() >= 6) {
+					System.out.printf("%s\t%s\t%s\t\t%s\t%s원\n", "[삭제]", rs.getString(2), rs.getString("MONEY_INOUT"),
+							cg[rs.getInt("CATEGORY_SEQ")-1].name(), 
 							decFor.format(rs.getInt("MONEY_WON")));
 				} else {
-					System.out.printf("%s \t %s \t %s\t\t %s \t\t %s원\n", "[삭제]", rs.getString(2),
-							cg[rs.getInt("CATEGORY_SEQ")-1].name(), rs.getString("MONEY_INOUT"),
+					System.out.printf("%s\t%s\t%s\t\t%s\t\t%s원\n", "[삭제]", rs.getString(2), rs.getString("MONEY_INOUT"),
+							cg[rs.getInt("CATEGORY_SEQ")-1].name(), 
 							decFor.format(rs.getInt("MONEY_WON")));
 				}
 				System.out.println("------------------------------------------------------------------------");
@@ -448,7 +450,8 @@ public class ABCreate {
 			DBManager.close(conn, pstmt, rs);
 			}
 		}catch(SQLException e) {
-			e.printStackTrace();
+			System.out.println("\n잘못된 값을 입력하셨습니다.\n");
+			mainManu();
 		}
 		mainManu();
 	}

@@ -80,21 +80,9 @@ public class ABRoutine {
 		
 		System.out.println("\n[입력된 루틴]");
 		System.out.println("------------------------------------------------------------------------");
-		System.out.printf("%s\t%s\t\t\t\t\t\t%s\n","주기","내용","지급토큰수");
+		System.out.printf("%s\t%s\t\t%s\n","주기","지급토큰수","내용");
 		System.out.println("------------------------------------------------------------------------");
-		if(routine.getROUTINE_CONTENTS().length()>=27) {
-			System.out.printf("%s\t%s\t\t%s\n",routine.getROUTINE_DIV(), routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-		} else if(routine.getROUTINE_CONTENTS().length()>=24) {
-			System.out.printf("%s\t%s\t\t\t%s\n",routine.getROUTINE_DIV(), routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-		} else if(routine.getROUTINE_CONTENTS().length()>=18) {
-			System.out.printf("%s\t%s\t\t\t\t%s\n",routine.getROUTINE_DIV(), routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-		} else if(routine.getROUTINE_CONTENTS().length()>=12) {
-			System.out.printf("%s\t%s\t\t\t\t%s\n",routine.getROUTINE_DIV(), routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-		} else if(routine.getROUTINE_CONTENTS().length()>=6) {
-			System.out.printf("%s\t%s\t\t\t\t\t%s\n",routine.getROUTINE_DIV(), routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-		} else {
-			System.out.printf("%s\t%s\t\t\t\t\t\t%s\n",routine.getROUTINE_DIV(), routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-		}
+		System.out.printf("%s\t%s개\t\t%s\n",routine.getROUTINE_DIV(), routine.getROUTINE_TOKEN(), routine.getROUTINE_CONTENTS());
 		
 		System.out.println("------------------------------------------------------------------------");
 		System.out.println("위 내용을 저장한다. : 1.확인 | 2.취소");
@@ -115,7 +103,8 @@ public class ABRoutine {
 				System.out.println("\n루틴을 저장 했습니다.\n");
 				DBManager.close(conn, pstmt, null);
 			}catch(Exception e) {
-				e.printStackTrace();
+				System.out.println("\n잘못된 값을 입력하셨습니다.\n");
+				rtManu();
 			}
 		}
 		rtManu();
@@ -158,7 +147,7 @@ public class ABRoutine {
 			routine.setROUTINE_DIV(div);
 			System.out.printf("\n[%s 루틴 조회]\n",routine.getROUTINE_DIV());
 			System.out.println("------------------------------------------------------------------------");
-			System.out.printf("%s\t%s\t\t\t\t\t\t%s\n","번호","내용","지급토큰수");
+			System.out.printf("%s\t%s\t\t%s\n","번호","지급토큰수","내용");
 			System.out.println("------------------------------------------------------------------------");
 			
 			int num2 = 0;
@@ -168,25 +157,13 @@ public class ABRoutine {
 				routine.setROUTINE_SEQ(rs.getInt("ROUTINE_SEQ"));
 				routine.setROUTINE_CONTENTS(rs.getString("ROUTINE_CONTENTS"));
 				routine.setROUTINE_TOKEN(rs.getInt("ROUTINE_TOKEN"));
-				
-				if(routine.getROUTINE_CONTENTS().length()>=25) {
-					System.out.printf("%s\t%s\t\t%s\n",num2, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else if(routine.getROUTINE_CONTENTS().length()>=17) {
-					System.out.printf("%s\t%s\t\t\t%s\n",num2, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else if(routine.getROUTINE_CONTENTS().length()>=12) {
-					System.out.printf("%s\t%s\t\t\t\t%s\n",num2, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else if(routine.getROUTINE_CONTENTS().length()>=6) {
-					System.out.printf("%s\t%s\t\t\t\t\t%s\n",num2, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else {
-					System.out.printf("%s\t%s\t\t\t\t\t\t%s\n",num2, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				}
+				System.out.printf("%s\t%s개\t\t%s\n",num2, routine.getROUTINE_TOKEN(), routine.getROUTINE_CONTENTS());
 			}
 			System.out.println("------------------------------------------------------------------------");
-
-			
 			DBManager.close(conn, pstmt, rs);
 			}catch(Exception e) {
-				e.printStackTrace();
+				System.out.println("\n잘못된 값을 입력하셨습니다.\n");
+				rtManu();
 			}
 		return array;
 	}
@@ -225,7 +202,7 @@ public class ABRoutine {
 				manu = scan.nextInt();
 			}
 			if(manu==1) {
-				System.out.println("달성한 루틴 번호를 입력하세요.");
+				System.out.println("[달성한 루틴 번호를 입력하세요.]");
 				System.out.print("입력: ");
 				int seq = scan.nextInt();
 				while(seq>array.length || seq<=0) {
@@ -248,19 +225,9 @@ public class ABRoutine {
 				
 				System.out.printf("\n[선택한 %s 루틴]\n",div);
 				System.out.println("------------------------------------------------------------------------");
-				System.out.printf("%s\t%s\t\t\t\t\t\t%s\n","번호","내용","지급토큰수");
+				System.out.printf("%s\t%s\t\t%s\n","번호","지급토큰수","내용");
 				System.out.println("------------------------------------------------------------------------");
-				if(routine.getROUTINE_CONTENTS().length()>=25) {
-					System.out.printf("%s\t%s\t\t%s\n",seq, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else if(routine.getROUTINE_CONTENTS().length()>=19) {
-					System.out.printf("%s\t%s\t\t\t%s\n",seq, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else if(routine.getROUTINE_CONTENTS().length()>=12) {
-					System.out.printf("%s\t%s\t\t\t\t%s\n",seq, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else if(routine.getROUTINE_CONTENTS().length()>=6) {
-					System.out.printf("%s\t%s\t\t\t\t\t%s\n",seq, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				} else {
-					System.out.printf("%s\t%s\t\t\t\t\t\t%s\n",seq, routine.getROUTINE_CONTENTS(), routine.getROUTINE_TOKEN());
-				}
+				System.out.printf("%s\t%s개\t\t%s\n",seq, routine.getROUTINE_TOKEN(),routine.getROUTINE_CONTENTS());
 				System.out.println("------------------------------------------------------------------------");
 				System.out.println("위 내용을 완료한다. : 1.확인 | 2.취소");
 				System.out.print("선택 : ");
@@ -277,7 +244,7 @@ public class ABRoutine {
 					System.out.printf("\n%s번의 토큰을 얻었습니다.\n",seq);
 				}
 			} else if(manu==2) {
-				System.out.println("수정할 루틴 번호를 입력하세요.");
+				System.out.println("[수정할 루틴 번호를 입력하세요.]");
 				System.out.print("입력: ");
 				int seq = scan.nextInt();
 				while(seq>array.length || seq<=0) {
@@ -286,7 +253,7 @@ public class ABRoutine {
 				}
 				routine.setROUTINE_SEQ(array[seq-1]);
 				
-				System.out.println("\n할일의 주기를 수정하시겠습니까?");
+				System.out.println("\n[할일의 주기를 수정하시겠습니까?]");
 				System.out.println("1.네 | 2.아니오");
 				System.out.print("입력: ");
 				int sel = scan.nextInt();
@@ -316,7 +283,7 @@ public class ABRoutine {
 					routine.setROUTINE_DIV(div);
 				}
 				
-				System.out.println("\n할일의 내용을 수정하시겠습니까?");
+				System.out.println("\n[할일의 내용을 수정하시겠습니까?]");
 				System.out.println("1.네 | 2.아니오");
 				System.out.print("입력: ");
 				sel = scan.nextInt();
@@ -348,7 +315,7 @@ public class ABRoutine {
 					}
 				}
 				
-				System.out.println("\n지급받을 토큰수를 수정하시겠습니까?");
+				System.out.println("\n[지급받을 토큰수를 수정하시겠습니까?]");
 				System.out.println("1.네 | 2.아니오");
 				System.out.print("입력: ");
 				sel = scan.nextInt();
@@ -372,7 +339,7 @@ public class ABRoutine {
 				
 				System.out.printf("\n[선택한 %s번 루틴]\n", seq);
 				System.out.println("------------------------------------------------------------------------");
-				System.out.printf("%s\t%s\t%s\t\t\t\t\t\t%s\n","상태", "주기","내용", "지급토큰수");
+				System.out.printf("%s\t%s\t%s\t\t%s\n","상태", "주기", "지급토큰수","내용");
 				System.out.println("------------------------------------------------------------------------");
 				sql = "SELECT ROUTINE_CONTENTS, ROUTINE_TOKEN FROM ROUTINE "
 						+ "WHERE ROUTINE_SEQ=? ";
@@ -381,44 +348,12 @@ public class ABRoutine {
 				rs = pstmt.executeQuery();
 				
 				
-				String contents;
 				if (rs.next()) {
-					contents = rs.getString("ROUTINE_CONTENTS");
-					if (contents.length() >= 25) {
-						System.out.printf("%s\t%s\t%s\t\t%s\n","[수정전]", div, contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					} else if (contents.length() >= 19) {
-						System.out.printf("%s\t%s\t%s\t\t\t%s\n","[수정전]", div, contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					} else if (contents.length() >= 12) {
-						System.out.printf("%s\t%s\t%s\t\t\t\t%s\n","[수정전]", div, contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					} else if (contents.length() >= 6) {
-						System.out.printf("%s\t%s\t%s\t\t\t\t\t%s\n","[수정전]",  div, contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					} else {
-						System.out.printf("%s\t%s\t%s\t\t\t\t\t\t%s\n", "[수정전]", div, contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					}
+						System.out.printf("%s\t%s\t%s개\t\t%s\n","[수정전]", div, rs.getInt("ROUTINE_TOKEN"), rs.getString("ROUTINE_CONTENTS"));
 				}
 				
-				contents=routine.getROUTINE_CONTENTS();
-				if (contents.length() >= 25) {
-					System.out.printf("%s\t%s\t%s\t\t%s\n","[수정후]", routine.getROUTINE_DIV(), contents,
-							routine.getROUTINE_TOKEN());
-				} else if (contents.length() >= 19) {
-					System.out.printf("%s\t%s\t%s\t\t\t%s\n","[수정후]", routine.getROUTINE_DIV(), contents,
-							routine.getROUTINE_TOKEN());
-				} else if (contents.length() >= 12) {
-					System.out.printf("%s\t%s\t%s\t\t\t\t%s\n","[수정후]", routine.getROUTINE_DIV(), contents,
-							routine.getROUTINE_TOKEN());
-				} else if (contents.length() >= 6) {
-					System.out.printf("%s\t%s\t%s\t\t\t\t\t%s\n","[수정후]", routine.getROUTINE_DIV(), contents,
-							routine.getROUTINE_TOKEN());
-				} else {
-					System.out.printf("%s\t%s\t%s\t\t\t\t\t\t%s\n", "[수정후]", routine.getROUTINE_DIV(), contents,
-							routine.getROUTINE_TOKEN());
-				}
+				System.out.printf("%s\t%s\t%s개\t\t%s\n","[수정후]", routine.getROUTINE_DIV(), routine.getROUTINE_TOKEN(),routine.getROUTINE_CONTENTS());
+				
 				System.out.println("------------------------------------------------------------------------");
 				System.out.println("위 내용을 수정한다. : 1.확인 | 2.취소");
 				System.out.print("선택 : ");
@@ -436,7 +371,7 @@ public class ABRoutine {
 					System.out.printf("\n%s번 루틴이 수정되었습니다.\n",seq);
 				}
 			} else if(manu==3) {
-				System.out.println("삭제할 루틴 번호를 입력하세요.");
+				System.out.println("[삭제할 루틴 번호를 입력하세요.]");
 				System.out.print("입력: ");
 				int seq = scan.nextInt();
 				while(seq>array.length || seq<=0) {
@@ -447,32 +382,15 @@ public class ABRoutine {
 				
 				System.out.printf("\n[선택한 %s번 루틴]\n", seq);
 				System.out.println("------------------------------------------------------------------------");
-				System.out.printf("%s\t%s\t\t\t\t\t\t%s\n","주기","내용", "지급토큰수");
+				System.out.printf("%s\t%s\t\t%s\n","주기","지급토큰수","내용");
 				System.out.println("------------------------------------------------------------------------");
 				sql = "SELECT ROUTINE_DIV, ROUTINE_CONTENTS, ROUTINE_TOKEN FROM ROUTINE "
 						+ "WHERE ROUTINE_SEQ=? ";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, routine.getROUTINE_SEQ());
 				rs = pstmt.executeQuery();
-				String contents;
 				if(rs.next()) {
-					contents=rs.getString("ROUTINE_CONTENTS");
-					if (contents.length() >= 25) {
-						System.out.printf("%s\t%s\t\t%s\n",rs.getString("ROUTINE_DIV"), contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					} else if (contents.length() >= 19) {
-						System.out.printf("%s\t%s\t\t\t%s\n",rs.getString("ROUTINE_DIV"), contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					} else if (contents.length() >= 12) {
-						System.out.printf("%s\t%s\t\t\t\t%s\n",rs.getString("ROUTINE_DIV"), contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					} else if (contents.length() >= 6) {
-						System.out.printf("%s\t%s\t\t\t\t\t%s\n",rs.getString("ROUTINE_DIV"), contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					} else {
-						System.out.printf("%s\t%s\t\t\t\t\t\t%s\n",rs.getString("ROUTINE_DIV"), contents,
-								rs.getInt("ROUTINE_TOKEN"));
-					}
+					System.out.printf("%s\t%s개\t\t%s\n",rs.getString("ROUTINE_DIV"), rs.getInt("ROUTINE_TOKEN"),rs.getString("ROUTINE_CONTENTS"));
 				}
 				System.out.println("------------------------------------------------------------------------");
 				System.out.println("위 내용을 삭제한다. : 1.확인 | 2.취소");
@@ -495,7 +413,10 @@ public class ABRoutine {
 			}
 			DBManager.close(conn, pstmt, rs);
 			rtManu();
-		}catch(Exception e) {e.printStackTrace();}
+		}catch(Exception e) {
+			System.out.println("\n잘못된 값을 입력하셨습니다.\n");
+			rtManu();
+		}
 		
 	}
 }
